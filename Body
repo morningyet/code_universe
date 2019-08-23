@@ -1,0 +1,110 @@
+class Body{
+  public int id;
+  public float mass; //质量参数
+  public float r;// 半径
+  public PVector pos;//位置
+  public PVector vel;//速度
+  public color col;
+  
+  ArrayList<PVector> path = new ArrayList<PVector>();
+  int MAXPATH=300;
+  
+  public Body(float mass, float x, float y, float vx, float vy,int id ) {
+    super();
+    this.id = id;
+    this.mass = mass;
+    this.r = calR(mass);
+    this.pos = new PVector(x,y);
+    if(x>=(width/2) && y>=(height/2)) this.vel = new PVector(vx,-vy);
+    if(x<(width/2) && y>=(height/2)) this.vel = new PVector(vx,vy);
+    if(x>=(width/2) && y<(height/2)) this.vel = new PVector(-vx,-vy);
+    if(x<(width/2) && y<(height/2)) this.vel = new PVector(-vx,vy);
+    
+    //this.vel = new PVector(vx,vy);
+    this.col = color(random(0,255),random(0,255),random(0,255));
+  }
+
+
+
+  float calR(float mass) {
+    // TODO Auto-generated method stub
+    //return sqrt(mass/PI);
+    if( max==null){
+        max=this;
+    }
+    if(max.mass<=this.mass){
+        max=this;
+    }
+
+   
+    
+    return pow(mass/PI * (3f/4f),1f/3f);
+
+  }
+  
+  void show(){
+    noStroke();
+    fill(col);
+    ellipse(pos.x, pos.y, r , r);
+    
+    fill(255);
+    text(id,pos.x, pos.y);
+  }
+  
+  void update(){
+    pos.add(vel);
+    path.add(new PVector(pos.x, pos.y));
+    if(path.size() > MAXPATH && stars.size()>10){
+      path.remove(0);
+    }
+    if(path.size() > MAXPATH*3 ){
+      path.remove(0);
+    }
+    
+    if(pos.x <=(-width*1.1) || pos.x>=(width*1.1)){
+      vel.x *=-1;
+    }
+    if(pos.y <=(-height*1.1) || pos.y>=(height*1.1)){
+      vel.y *=-1;
+    }
+  }
+  
+  void showPath(){
+    stroke(col);
+    for(int i = 0 , p= path.size() ; i<p;i++){
+      PVector a = path.get(i);
+      PVector b;
+      if(i+1 == p){
+        b = pos;        
+      }else{
+        b=path.get(i+1);
+        line(a.x , a.y , b.x , b.y);
+      }
+    }
+  
+  }
+  
+  void attract(){
+    for(int i = 0 ,n=stars.size() ; i < stars.size(); i++){
+      Body other = stars.get(i);
+      if(other == this)
+        continue;
+      PVector dir = new PVector(this.pos.x - other.pos.x,this.pos.y - other.pos.y);
+      if(dir.mag()<=this.r+other.r){
+        if(this.mass > other.mass){
+          this.vel=PVector.div(PVector.add(PVector.mult(this.vel,this.mass),
+                                           PVector.mult(other.vel,other.mass)),
+                               this.mass+other.mass);
+          this.mass = this.mass + other.mass;
+          this.r= calR(this.mass);
+          stars.remove(i);
+        }
+         continue;
+      }
+      
+      float forcePower = G *(this.mass * other.mass)/dir.magSq();
+      PVector force = dir.normalize().mult(forcePower);
+      other.vel.add((force.div(other.mass)).mult(1f / frameRate));
+    }
+  }
+}
