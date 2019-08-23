@@ -8,13 +8,14 @@ class Body{
   
   ArrayList<PVector> path = new ArrayList<PVector>();
   int MAXPATH=300;
-  
+  //构造函数
   public Body(float mass, float x, float y, float vx, float vy,int id ) {
     super();
     this.id = id;
     this.mass = mass;
     this.r = calR(mass);
     this.pos = new PVector(x,y);
+    //这里我试图创建一个顺时针宇宙,但是没什么卵用
     if(x>=(width/2) && y>=(height/2)) this.vel = new PVector(vx,-vy);
     if(x<(width/2) && y>=(height/2)) this.vel = new PVector(vx,vy);
     if(x>=(width/2) && y<(height/2)) this.vel = new PVector(-vx,-vy);
@@ -25,7 +26,7 @@ class Body{
   }
 
 
-
+  //计算半径,顺便把max质量恒星赋值
   float calR(float mass) {
     // TODO Auto-generated method stub
     //return sqrt(mass/PI);
@@ -35,18 +36,17 @@ class Body{
     if(max.mass<=this.mass){
         max=this;
     }
-
-   
-    
+    //球形半径
     return pow(mass/PI * (3f/4f),1f/3f);
 
   }
   
+  //显示球形
   void show(){
     noStroke();
     fill(col);
     ellipse(pos.x, pos.y, r , r);
-    
+    //显示星体编号
     fill(255);
     text(id,pos.x, pos.y);
   }
@@ -54,17 +54,20 @@ class Body{
   void update(){
     pos.add(vel);
     path.add(new PVector(pos.x, pos.y));
+    //星星数量减少时,延长轨迹视图
     if(path.size() > MAXPATH && stars.size()>10){
       path.remove(0);
     }
+    
     if(path.size() > MAXPATH*3 ){
       path.remove(0);
     }
     
-    if(pos.x <=(-width*1.1) || pos.x>=(width*1.1)){
+    //下面反弹效果这部分up主给注释了.留着或者能挽救下跑出屏幕的可怜星星
+    if(pos.x <=(-width*2) || pos.x>=(width*2)){
       vel.x *=-1;
     }
-    if(pos.y <=(-height*1.1) || pos.y>=(height*1.1)){
+    if(pos.y <=(-height*2) || pos.y>=(height*2)){
       vel.y *=-1;
     }
   }
@@ -84,6 +87,7 @@ class Body{
   
   }
   
+  //引力部分,纯照抄,公式什么我连看都不想看了,呵呵= =!
   void attract(){
     for(int i = 0 ,n=stars.size() ; i < stars.size(); i++){
       Body other = stars.get(i);
@@ -97,7 +101,7 @@ class Body{
                                this.mass+other.mass);
           this.mass = this.mass + other.mass;
           this.r= calR(this.mass);
-          stars.remove(i);
+          stars.remove(i);//注意这里的remove,优化的时候其他部分for循环中stars.size()先赋值会出错.
         }
          continue;
       }
