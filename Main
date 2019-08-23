@@ -1,21 +1,21 @@
-PFont font;
+PFont font;//字体
 Body star;
-boolean running = false;
-float G = 0.5f;
+boolean running = false;//暂停键是r
+float G = 0.5f;//引力常数
 
 ArrayList<Body> stars = new ArrayList<Body>();
-int startBodyCount = 100;
-PVector startBodyMass = new PVector(500,1000);
-float startBodySpeed = 2;
-Body max;
+int startBodyCount = 100; //星体数量
+PVector startBodyMass = new PVector(500,1000); //星体质量范围
+float startBodySpeed = 2; //星体速度
+Body max;//最重的
 
 void setup()
 {
-    frameRate(144);
-    size(1600,900);
-    font = loadFont("Arial-BoldMT-12.vlw");
+    frameRate(144);//刷新
+    size(1600,900);//尺寸
+    font = loadFont("Arial-BoldMT-12.vlw");//字体
     textFont(font,12);
-    
+    //创建星星
     for(int i=0 ; i < startBodyCount-1 ; i++)
     {
         stars.add(new Body( random(startBodyMass.x,startBodyMass.y),
@@ -34,6 +34,7 @@ void setup()
             //    }
             //}       
     }  
+    //你是人群中最亮的星
     stars.add(new Body(5000,width/2,height/2,0,0,startBodyCount-1));
 }
 
