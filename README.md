@@ -1,13 +1,9 @@
 # simulink_universe_gravitation
-参考:https://www.bilibili.com/video/av64749761
 
-感谢up主!
-
-照着视频爬代码好累!
 
 软件procesing3.3.5  参考文档和下载:  http://iprocessing.cn
 
-语言 java (up主是个异端,大括号竟然换行,把我都带歪了)
+语言 java 
 
 procesing 支持的java 语法感觉略诡异....
 
@@ -25,4 +21,3 @@ procesing 支持的java 语法感觉略诡异....
 我瞎创建的Arial-BoldMT-12.vlw
 
 
-最后再次感谢up主!
